@@ -73,19 +73,6 @@ If you already have an Azure OpenAI instance, you can use that instead of creati
 
 3. The scripts default to keyless access (via `AzureDefaultCredential`), but you can optionally use a key by setting `AZURE_OPENAI_KEY` in `.env`.
 
-### Using an openai.com instance
-
-If you have an openai.com instance, you can use that instead of an Azure OpenAI instance.
-
-1. Create `.env` file by copying `.env.sample`
-2. Change `OPENAI_HOST` to "openai" and fill in the key for for your OpenAI account. If you do not have an organization, you can leave that blank.
-
-    ```shell
-    OPENAI_HOST="openai"
-    OPENAICOM_KEY=""
-    OPENAICOM_ORGANIZATION=""
-    ```
-
 ## Generating ground truth data
 
 In order to evaluate new answers, they must be compared to "ground truth" answers: the ideal answer for a particular question. See `example_input/qa.jsonl` for an example of the format.

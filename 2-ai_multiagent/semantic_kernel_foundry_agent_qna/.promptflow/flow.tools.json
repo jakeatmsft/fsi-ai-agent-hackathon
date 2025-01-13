@@ -1,0 +1,37 @@
+{
+  "package": {},
+  "code": {
+    "qna_multi_agent_step.py": {
+      "type": "python",
+      "inputs": {
+        "aoai_conn": {
+          "type": [
+            "AzureOpenAIConnection"
+          ]
+        },
+        "deployment_name": {
+          "type": [
+            "string"
+          ]
+        },
+        "bing_connection": {
+          "type": [
+            "CustomConnection"
+          ]
+        },
+        "subject_context": {
+          "type": [
+            "string"
+          ]
+        },
+        "question": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "qna_multi_agent_step.py",
+      "function": "my_python_tool"
+    }
+  }
+}
