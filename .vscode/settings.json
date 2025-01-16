@@ -9,5 +9,6 @@
         ".pytest_cache": true,
         "__pycache__": true,
         ".mypy_cache": true
-    }
+    },
+    "python.terminal.activateEnvironment": true
 }

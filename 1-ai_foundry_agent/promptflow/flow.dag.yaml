@@ -1,0 +1,27 @@
+id: template_chat_flow
+name: Template Chat Flow
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    is_chat_input: false
+    is_chat_history: true
+  question:
+    type: string
+    default: What happened in the last NFL playoff game?
+    is_chat_input: true
+outputs:
+  answer:
+    type: string
+    reference: ${agent_websearch.output}
+    is_chat_output: true
+nodes:
+- name: agent_websearch
+  type: python
+  source:
+    type: code
+    path: agent_websearch.py
+  inputs:
+    question: ${inputs.question}
+  use_variants: false

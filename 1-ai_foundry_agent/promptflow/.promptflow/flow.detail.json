@@ -1,0 +1,130 @@
+{
+  "flow_runs": [
+    {
+      "run_id": "af722cce-a25b-49c1-ad68-a3874f46cd77_0",
+      "status": "Completed",
+      "error": null,
+      "inputs": {
+        "chat_history": [],
+        "question": "What happened in the last NFL playoff game?"
+      },
+      "output": {
+        "answer": "There is no information available on that topic."
+      },
+      "metrics": null,
+      "request": null,
+      "parent_run_id": "af722cce-a25b-49c1-ad68-a3874f46cd77",
+      "root_run_id": "af722cce-a25b-49c1-ad68-a3874f46cd77",
+      "source_run_id": null,
+      "flow_id": "template_chat_flow",
+      "start_time": "2025-01-16T18:25:15.709134Z",
+      "end_time": "2025-01-16T18:25:47.857167Z",
+      "index": 0,
+      "api_calls": [
+        {
+          "name": "flow",
+          "node_name": "flow",
+          "type": "Flow",
+          "start_time": 1737080715.709134,
+          "end_time": 1737080747.857167,
+          "children": [
+            {
+              "name": "agent_websearch",
+              "type": "Function",
+              "inputs": {
+                "question": "What happened in the last NFL playoff game?"
+              },
+              "output": "There is no information available on that topic.",
+              "start_time": 1737080715.709134,
+              "end_time": 1737080747.849085,
+              "error": null,
+              "children": [],
+              "node_name": "agent_websearch",
+              "parent_id": "",
+              "id": "7e226b1d-349f-4e41-97ec-622ccf0cdf2f",
+              "function": "agent_websearch",
+              "system_metrics": {}
+            }
+          ],
+          "system_metrics": {
+            "duration": 32.148033,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+          },
+          "inputs": {
+            "chat_history": [],
+            "question": "What happened in the last NFL playoff game?"
+          },
+          "output": {
+            "answer": "There is no information available on that topic."
+          },
+          "error": null
+        }
+      ],
+      "name": "",
+      "description": "",
+      "tags": null,
+      "system_metrics": {
+        "duration": 32.148033,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "result": {
+        "answer": "There is no information available on that topic."
+      },
+      "upload_metrics": false,
+      "otel_trace_id": "0x122f70fd822c32ae6d76bb69c1ac6ea5",
+      "message_format": "basic"
+    }
+  ],
+  "node_runs": [
+    {
+      "node": "agent_websearch",
+      "flow_run_id": "af722cce-a25b-49c1-ad68-a3874f46cd77",
+      "run_id": "af722cce-a25b-49c1-ad68-a3874f46cd77_agent_websearch_0",
+      "status": "Completed",
+      "inputs": {
+        "question": "What happened in the last NFL playoff game?"
+      },
+      "output": "There is no information available on that topic.",
+      "metrics": null,
+      "error": null,
+      "parent_run_id": "af722cce-a25b-49c1-ad68-a3874f46cd77_0",
+      "start_time": "2025-01-16T18:25:15.709134Z",
+      "end_time": "2025-01-16T18:25:47.849085Z",
+      "index": 0,
+      "api_calls": [
+        {
+          "name": "agent_websearch",
+          "type": "Function",
+          "inputs": {
+            "question": "What happened in the last NFL playoff game?"
+          },
+          "output": "There is no information available on that topic.",
+          "start_time": 1737080715.709134,
+          "end_time": 1737080747.849085,
+          "error": null,
+          "children": [],
+          "node_name": "agent_websearch",
+          "parent_id": "",
+          "id": "7e226b1d-349f-4e41-97ec-622ccf0cdf2f",
+          "function": "agent_websearch",
+          "system_metrics": {}
+        }
+      ],
+      "cached_run_id": null,
+      "cached_flow_run_id": null,
+      "logs": {
+        "stdout": "[2025-01-16T18:25:38+0000] Created agent, agent ID: asst_yUFW96lOU5IMJobbOkZd8Uuw\n[2025-01-16T18:25:39+0000] Created thread, ID: thread_h1wSyq0QX2yifGDoRJpo0F5Q\n[2025-01-16T18:25:40+0000] Created message, ID: msg_psxIo7rGUhqjv1pknavYYHjj\n[2025-01-16T18:25:42+0000] Created run, ID: run_rvaFdpIamOSdab8yy3jspRKY\n[2025-01-16T18:25:46+0000] Current run status: RunStatus.COMPLETED\n[2025-01-16T18:25:46+0000] Run completed with status: RunStatus.COMPLETED\n[2025-01-16T18:25:47+0000] Messages: {'object': 'list', 'data': [{'id': 'msg_yCEk32xxEb31PO7Q5p0E8EDj', 'object': 'thread.message', 'created_at': 1737051941, 'assistant_id': 'asst_yUFW96lOU5IMJobbOkZd8Uuw', 'thread_id': 'thread_h1wSyq0QX2yifGDoRJpo0F5Q', 'run_id': 'run_rvaFdpIamOSdab8yy3jspRKY', 'role': 'assistant', 'content': [{'type': 'text', 'text': {'value': 'There is no information available on that topic.', 'annotations': []}}], 'attachments': [], 'metadata': {}}, {'id': 'msg_psxIo7rGUhqjv1pknavYYHjj', 'object': 'thread.message', 'created_at': 1737051939, 'assistant_id': None, 'thread_id': 'thread_h1wSyq0QX2yifGDoRJpo0F5Q', 'run_id': None, 'role': 'user', 'content': [{'type': 'text', 'text': {'value': 'Current date is 2025-01-16. What happened in the last NFL playoff game?', 'annotations': []}}], 'attachments': [], 'metadata': {}}], 'first_id': 'msg_yCEk32xxEb31PO7Q5p0E8EDj', 'last_id': 'msg_psxIo7rGUhqjv1pknavYYHjj', 'has_more': False}\n[2025-01-16T18:25:47+0000] Deleted agent\n",
+        "stderr": ""
+      },
+      "system_metrics": {
+        "duration": 32.139951
+      },
+      "result": "There is no information available on that topic.",
+      "message_format": "basic"
+    }
+  ]
+}

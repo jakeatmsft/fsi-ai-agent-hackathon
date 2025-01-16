@@ -1,3 +1,6 @@
+
+from promptflow import tool
+
 import asyncio
 import time, datetime
 import os
@@ -18,9 +21,9 @@ load_dotenv()
 
 tracer = trace.get_tracer(__name__)
 
-
+@tool
 @tracer.start_as_current_span(__file__)
-async def main() -> None:
+async def agent_websearch(question: str) -> str:
     async with DefaultAzureCredential() as creds:
         async with AIProjectClient.from_connection_string(
             credential=creds, conn_str=os.environ["PROJECT_CONNECTION_STRING"],
@@ -37,8 +40,8 @@ async def main() -> None:
             # Create agent
             agent = await project_client.agents.create_agent(
                 model="gpt-4-turbo-2024-04-09",
-                name="my-assistant",
-                instructions="You are helpful assistant",
+                name="my-docs-assistant",
+                instructions='You are a question answerer  using documentation site.  Use the WebSearch tool to retrieve information to answer the questions from the docs site. Prepend "site:learn.microsoft.com" to any search query to search only the documentation site. You take in questions from a questionnaire and emit the answers, using documentation from the public web. You also emit links to any websites you find that help answer the questions.  Do not address the user make all responses solely in the third person. If you do not find information on a topic, you simply respond that there is no information available on that topic. You will emit an answer that is no greater than 1000 characters in length.',
                 tools = functions.definitions + code_interpreter.definitions
             )
             print(f"Created agent, agent ID: {agent.id}")
@@ -49,7 +52,7 @@ async def main() -> None:
 
             # Create and send message
             message = await project_client.agents.create_message(
-                thread_id=thread.id, role="user", content=f"Current date is {datetime.datetime.now().strftime('%Y-%m-%d')}. Render this url 'https://www.dmusd.org/Parents--Community/Student-Nutrition-Program/index.html' and look for a pdf link to the latest 'Breakfast and Lunch' calendar, download the latest meal calendar."
+                thread_id=thread.id, role="user", content=f"Current date is {datetime.datetime.now().strftime('%Y-%m-%d')}. {question}"
             )
             print(f"Created message, ID: {message.id}")
 
@@ -114,5 +117,6 @@ async def main() -> None:
             await project_client.agents.delete_agent(agent.id)
             print("Deleted agent")
 
-if __name__ == "__main__":
-    asyncio.run(main())
+            last_message = messages.text_messages[0].text.value
+            return last_message
+            
