@@ -1,4 +1,4 @@
-promptflow==1.16.2
+promptflow==1.17.2
 semantic-kernel==1.16.0
 python-dotenv==1.0.0
 beautifulsoup4==4.12
