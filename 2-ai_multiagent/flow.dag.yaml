@@ -1,0 +1,47 @@
+inputs:
+  chat_history:
+    type: list
+    default: []
+    is_chat_input: false
+    is_chat_history: true
+  subject_context:
+    type: string
+    default: Azure OpenAI
+    is_chat_input: false
+  question:
+    type: string
+    default: What types of safety filters are available in Azure OpenAI? Use search
+      tools and webpages to get the latest information.
+    is_chat_input: true
+outputs:
+  output:
+    type: string
+    reference: ${qna_multi_agent_step.output}
+    is_chat_output: false
+  formatted_output:
+    type: string
+    reference: ${formatter.output}
+    is_chat_output: true
+nodes:
+- name: qna_multi_agent_step
+  type: python
+  source:
+    type: code
+    path: qna_agentteam_step.py
+  inputs:
+    deployment_name: gpt-4o
+    question: ${inputs.question}
+    subject_context: ${inputs.subject_context}
+  use_variants: false
+- name: formatter
+  type: prompt
+  source:
+    type: code
+    path: formatter.jinja2
+  inputs:
+    output: ${qna_multi_agent_step.output}
+  use_variants: false
+node_variants: {}
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
