@@ -9,8 +9,7 @@ inputs:
     is_chat_history: true
   question:
     type: string
-    default: What types of safety filters are available in Azure OpenAI? Use search
-      tools and webpages to get the latest information.
+    default: Current date is 2025-02-07. What is the pricing model for Azure OpenAI services, and how can organizations manage costs?
     is_chat_input: true
 outputs:
   answer:

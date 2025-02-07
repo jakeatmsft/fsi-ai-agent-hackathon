@@ -1,0 +1,3 @@
+{
+  "answer": "The Azure OpenAI Service uses a consumption-based pricing model, meaning you pay for the resources you use. Organizations can manage costs by using the Azure pricing calculator to estimate potential expenses before deploying resources. It's important to understand the full billing model as deploying new resources on Azure infrastructure may incur additional costs. For more detailed information, organizations can refer to the Azure OpenAI cost management documentation on Microsoft's website: [Azure OpenAI Cost Management](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/manage-costs)."
+}

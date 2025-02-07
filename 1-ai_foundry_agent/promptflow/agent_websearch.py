@@ -11,6 +11,7 @@ from azure.ai.projects.models import (AsyncFunctionTool,
                                       RequiredFunctionToolCall, 
                                       SubmitToolOutputsAction, 
                                       ToolOutput, 
+                                      AsyncToolSet,
                                       CodeInterpreterTool)
 from azure.ai.projects.telemetry.agents import AIAgentsInstrumentor
 from azure.identity.aio import DefaultAzureCredential
@@ -41,6 +42,10 @@ async def agent_websearch(question: str, model_deployment: str) -> str:
             functions = AsyncFunctionTool(functions=user_async_function_tools)
             code_interpreter = CodeInterpreterTool()
 
+            toolset = AsyncToolSet()
+            toolset.add(functions)
+            toolset.add(code_interpreter)
+
             agent_name = "docs-research-assistant"
             # Try to find an existing agent with the name "my-docs-assistant"
             agents = await project_client.agents.list_agents()
@@ -68,42 +73,14 @@ async def agent_websearch(question: str, model_deployment: str) -> str:
             )
             print(f"Created message, ID: {message.id}")
 
-            # Create and run assistant task
-            run = await project_client.agents.create_run(thread_id=thread.id, assistant_id=agent.id)
-            print(f"Created run, ID: {run.id}")
+            # Create and process agent run in thread with tools
+            # [START create_and_process_run]
+            run = await project_client.agents.create_and_process_run(thread_id=thread.id, assistant_id=agent.id, toolset=toolset)
+            # [END create_and_process_run]
+            print(f"Run finished with status: {run.status}")
 
-            # Polling loop for run status
-            while run.status in ["queued", "in_progress", "requires_action"]:
-                run = await project_client.agents.get_run(thread_id=thread.id, run_id=run.id)
-
-                if run.status == "requires_action" and isinstance(run.required_action, SubmitToolOutputsAction):
-                    tool_calls = run.required_action.submit_tool_outputs.tool_calls
-                    if not tool_calls:
-                        print("No tool calls provided - cancelling run")
-                        await project_client.agents.cancel_run(thread_id=thread.id, run_id=run.id)
-                        break
-
-                    tool_outputs = []
-                    for tool_call in tool_calls:
-                        if isinstance(tool_call, RequiredFunctionToolCall):
-                            try:
-                                output = await functions.execute(tool_call)
-                                tool_outputs.append(
-                                    ToolOutput(
-                                        tool_call_id=tool_call.id,
-                                        output=output,
-                                    )
-                                )
-                            except Exception as e:
-                                print(f"Error executing tool_call {tool_call.id}: {e}")
-
-                    print(f"Tool outputs: {tool_outputs}")
-                    if tool_outputs:
-                        await project_client.agents.submit_tool_outputs_to_run(
-                            thread_id=thread.id, run_id=run.id, tool_outputs=tool_outputs
-                        )
-
-                print(f"Current run status: {run.status}")
+            if run.status == "failed":
+                print(f"Run failed: {run.last_error}")
 
             print(f"Run completed with status: {run.status}")
 
