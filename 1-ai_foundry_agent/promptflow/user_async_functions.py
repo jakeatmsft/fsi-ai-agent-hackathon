@@ -175,7 +175,7 @@ async def get_webpage(url: str) -> str:
             return result
 
 # Statically defined user functions for fast reference with send_email as async but the rest as sync
-user_async_functions: Set[Callable[..., Any]] = {
+user_async_function_tools: Set[Callable[..., Any]] = {
     fetch_current_datetime,
     bing_search,
     get_webpage,

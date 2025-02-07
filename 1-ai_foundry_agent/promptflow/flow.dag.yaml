@@ -9,7 +9,8 @@ inputs:
     is_chat_history: true
   question:
     type: string
-    default: What happened in the last NFL playoff game?
+    default: What types of safety filters are available in Azure OpenAI? Use search
+      tools and webpages to get the latest information.
     is_chat_input: true
 outputs:
   answer:
@@ -24,4 +25,5 @@ nodes:
     path: agent_websearch.py
   inputs:
     question: ${inputs.question}
+    model_deployment: 'gpt-4o'
   use_variants: false

@@ -1,27 +1,34 @@
-# Copyright (c) Microsoft. All rights reserved.
-import asyncio, json
+import json
+import os
+import time
+import datetime
+import random
+import string
+from pathlib import Path
+import asyncio
+
+from dotenv import load_dotenv
+
 from promptflow.core import tool
 from promptflow.core._connection import AzureOpenAIConnection, CustomConnection
-from datetime import datetime
-import asyncio
-import time, datetime
-import os
+
 from azure.ai.projects.aio import AIProjectClient
-from azure.ai.projects.models import AsyncFunctionTool, RequiredFunctionToolCall, SubmitToolOutputsAction, ToolOutput
-from azure.ai.projects.models import CodeInterpreterTool, AsyncToolSet
+from azure.ai.projects.models import (
+    AsyncFunctionTool,
+    RequiredFunctionToolCall,
+    SubmitToolOutputsAction,
+    ToolOutput,
+    CodeInterpreterTool,
+    AsyncToolSet,
+)
 from azure.identity.aio import DefaultAzureCredential
 from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry import trace
+
 from agent_team import AgentTeam
+from user_async_functions import user_async_function_tools
 
-
-from user_async_functions import user_async_functions
-from pathlib import Path 
-import string
-import random
-from dotenv import load_dotenv
-
-load_dotenv()
+load_dotenv('deploy.env')
 
 
 os.environ["AZURE_TRACING_GEN_AI_CONTENT_RECORDING_ENABLED"] = 'true'
@@ -43,7 +50,7 @@ async def my_python_tool(deployment_name:str, subject_context:str, question: str
             application_insights_connection_string = await project_client.telemetry.get_connection_string()
             configure_azure_monitor(connection_string=application_insights_connection_string)
             # Initialize assistant functions
-            functions = AsyncFunctionTool(functions=user_async_functions)
+            functions = AsyncFunctionTool(functions=user_async_function_tools)
             code_interpreter = CodeInterpreterTool()
             
             #generate random team name
@@ -54,10 +61,7 @@ async def my_python_tool(deployment_name:str, subject_context:str, question: str
             Context=subject_context
             CharacterLimit = 1000
             
-            def randomize_name(name, random_name):
-                return name + '-' + random_name 
-            
-            DOCS_QUESTION_ANSWER_NAME = randomize_name("DocsQuestionAnswer",random_name)
+            DOCS_QUESTION_ANSWER_NAME = "DocsQuestionAnswer"
             DOCS_QUESTION_ANSWER_INSTRUCTIONS = f"""
                     You are a question answerer for {Context} using documentation site.  Use the WebSearch tool to retrieve information to answer the questions from the docs site.
                     Prepend "site:learn.microsoft.com" to any search query to search only the documentation site. 
@@ -67,7 +71,7 @@ async def my_python_tool(deployment_name:str, subject_context:str, question: str
                     If you do not find information on a topic, you simply respond that there is no information available on that topic.
                     You will emit an answer that is no greater than {CharacterLimit} characters in length.
                 """
-            ANSWER_CHECKER_NAME = randomize_name("AnswerChecker",random_name)
+            ANSWER_CHECKER_NAME = "AnswerChecker"
             ANSWER_CHECKER_INSTRUCTIONS = f"""
                     You are an answer checker for {Context}. Your responses always start with either the words ANSWER CORRECT or ANSWER INCORRECT.
                     Given a question and an answer, you check the answer for accuracy regarding {Context},
@@ -76,7 +80,8 @@ async def my_python_tool(deployment_name:str, subject_context:str, question: str
                     Otherwise, you respond "ANSWER INCORRECT - " and add the portion that is incorrect.
                     You do not output anything other than "ANSWER CORRECT" or "ANSWER INCORRECT - <portion>".
                 """
-            LINK_CHECKER_NAME = randomize_name("LinkChecker",random_name)
+            LINK_CHECKER_NAME = "LinkChecker"
+            
             LINK_CHECKER_INSTRUCTIONS = """
                     You are a link checker. Your responses always start with either the words LINKS CORRECT or LINK INCORRECT.
                     Given a question and an answer that contains links, you verify that the links are working and return a non-error response,
@@ -84,7 +89,7 @@ async def my_python_tool(deployment_name:str, subject_context:str, question: str
                     Otherwise, for each bad link, you respond "LINK INCORRECT - " and add the link that is incorrect.
                     You do not output anything other than "LINKS CORRECT" or "LINK INCORRECT - <link>".
                 """
-            MANAGER_NAME = randomize_name("Manager",random_name)
+            MANAGER_NAME = "Manager"
             MANAGER_INSTRUCTIONS = """
                     You are a manager which reviews the question, the answer to the question, and the links.
                     If the answer checker replies "ANSWER INCORRECT", or the link checker replies "LINK INCORRECT," you can reply "reject" and ask the question answerer to correct the answer.
@@ -125,14 +130,14 @@ async def my_python_tool(deployment_name:str, subject_context:str, question: str
             )
             
             #print(f"Created agent, agent ID: {agent.id}")
-            agent_team.assemble_team()
+            await agent_team.assemble_team()
             user_request = (
                 question
             )
 
             response_msg = await agent_team.process_request(request=user_request)
 
-            agent_team.dismantle_team()
+            await agent_team.dismantle_team()
             
             last_message = next(
                 (msg for msg in reversed(response_msg) if msg.get("agent") == DOCS_QUESTION_ANSWER_NAME), 

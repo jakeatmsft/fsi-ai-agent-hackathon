@@ -154,7 +154,7 @@ class AgentTeam:
         """
         self._tasks.append(task)
 
-    def create_team_leader(self, model: str, name: str, instructions: str, toolset: Optional[AsyncToolSet] = None) -> None:
+    async def create_team_leader(self, model: str, name: str, instructions: str, toolset: Optional[AsyncToolSet] = None) -> None:
         """
         Add a new agent (team member) to this AgentTeam.
 
@@ -179,28 +179,28 @@ class AgentTeam:
             toolset=toolset,
             can_delegate=True,
         )
-        self._team_leader.agent_instance = self._project_client.agents.create_agent(
+        self._team_leader.agent_instance = await self._project_client.agents.create_agent(
             model=self._team_leader.model,
             name=self._team_leader.name,
             instructions=self._team_leader.instructions,
             toolset=self._team_leader.toolset,
         )
 
-    def _create_team_leader(self):
+    async def _create_team_leader(self):
         """
         Create and initialize the default 'TeamLeader' agent with awareness of all other agents.
         """
         toolset = AsyncToolSet()
         toolset.add(default_function_tool)
         instructions = self.TEAM_LEADER_INSTRUCTIONS.format(agent_name="TeamLeader", team_name=self.team_name) + "\n"
-        self.create_team_leader(
+        await self.create_team_leader(
             model=self.TEAM_LEADER_MODEL,
             name="TeamLeader",
             instructions=instructions,
             toolset=toolset,
         )
 
-    def assemble_team(self):
+    async def assemble_team(self):
         """
         Create the team leader agent and initialize all member agents with
         their configured or default toolsets.
@@ -208,7 +208,7 @@ class AgentTeam:
         assert self._project_client is not None, "project_client must not be None"
 
         if self._team_leader is None:
-            self._create_team_leader()
+            await self._create_team_leader()
 
         for member in self._members:
             if member is self._team_leader:
@@ -233,7 +233,7 @@ class AgentTeam:
                     original_instructions=member.instructions,
                     team_description=team_description,
                 )
-            member.agent_instance = self._project_client.agents.create_agent(
+            member.agent_instance = await self._project_client.agents.create_agent(
                 model=member.model, name=member.name, instructions=extended_instructions, toolset=member.toolset
             )
 
@@ -250,7 +250,7 @@ class AgentTeam:
                 self._team_leader.agent_instance = await self._team_leader.agent_instance
             team_leader_instance = self._team_leader.agent_instance
             print(f"Deleting team leader agent '{self._team_leader.name}'")
-            self._project_client.agents.delete_agent(team_leader_instance.id)
+            await self._project_client.agents.delete_agent(team_leader_instance.id)
 
         # Handle other team members
         for member in self._members:
@@ -259,7 +259,7 @@ class AgentTeam:
                     member.agent_instance = await member.agent_instance
                 agent_instance = member.agent_instance
                 print(f"Deleting agent '{member.name}'")
-                self._project_client.agents.delete_agent(agent_instance.id)
+                await self._project_client.agents.delete_agent(agent_instance.id)
 
         AgentTeam._remove_team(self.team_name)
 
