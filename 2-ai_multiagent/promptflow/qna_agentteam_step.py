@@ -139,4 +139,10 @@ async def my_python_tool(deployment_name:str, subject_context:str, question: str
                 (msg for msg in reversed(response_msg) if msg.get("agent") == DOCS_QUESTION_ANSWER_NAME), 
                 None
             )
-            return {"last_message": last_message['text'], "history": response_msg}
+            last_message_text = (
+                last_message.get("text")
+                if isinstance(last_message, dict) and "text" in last_message
+                else "Agent team did not return a response."
+            )
+            response_history = response_msg if isinstance(response_msg, list) else []
+            return {"last_message": last_message_text, "history": response_history}
