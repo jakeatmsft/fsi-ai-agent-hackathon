@@ -30,14 +30,10 @@ from user_async_functions import user_async_function_tools
 
 load_dotenv('deploy.env')
 
-
-os.environ["AZURE_TRACING_GEN_AI_CONTENT_RECORDING_ENABLED"] = 'true'
-print("tracing settings: ", os.environ["AZURE_TRACING_GEN_AI_CONTENT_RECORDING_ENABLED"])
-
-#tracer = trace.get_tracer(__name__)
+tracer = trace.get_tracer(__name__)
 
 @tool
-#@tracer.start_as_current_span(__file__)
+@tracer.start_as_current_span(__file__)
 async def my_python_tool(deployment_name:str, subject_context:str, question: str) -> str:
 
 
