@@ -1,0 +1,27 @@
+{
+  "package": {},
+  "code": {
+    "mag1_chat.py": {
+      "type": "python",
+      "inputs": {
+        "input1": {
+          "type": [
+            "string"
+          ]
+        },
+        "model_deployment": {
+          "type": [
+            "string"
+          ]
+        },
+        "conn": {
+          "type": [
+            "AzureOpenAIConnection"
+          ]
+        }
+      },
+      "source": "mag1_chat.py",
+      "function": "mag1_tool"
+    }
+  }
+}

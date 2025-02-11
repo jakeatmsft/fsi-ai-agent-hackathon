@@ -1,0 +1,27 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    is_chat_history: true
+    default: []
+  question:
+    type: string
+    is_chat_input: true
+    default: create a comprehensive list of all models offered in Azure OpenAI
+outputs:
+  answer:
+    type: string
+    reference: ${mag1_chat.output}
+    is_chat_output: true
+nodes:
+- name: mag1_chat
+  type: python
+  source:
+    type: code
+    path: mag1_chat.py
+  inputs:
+    conn: Default_AzureOpenAI
+    model_deployment: gpt-4o
+    input1: ${inputs.question}
