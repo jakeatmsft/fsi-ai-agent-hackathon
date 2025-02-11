@@ -61,7 +61,7 @@ While the default multimodal LLM we use for all agents is GPT-4o, Magentic-One i
 
 ## Run the promptflow:
 
-![alt text](image.png)
+![alt text](./promptflow/image.png)
 
 - Modify the `default` text to your desired task.
 - Use the "Test" feature, or `shift-f5`, the run the promptflow in Standard Mode.
