@@ -1,5 +1,5 @@
 id: template_chat_flow
-name: Template Chat Flow
+name: Single Agent Web Search
 environment:
   python_requirements_txt: requirements.txt
 inputs:
@@ -25,4 +25,5 @@ nodes:
   inputs:
     question: ${inputs.question}
     model_deployment: 'gpt-4o'
+    bing_grounding_conn: 'binggrounding'
   use_variants: false

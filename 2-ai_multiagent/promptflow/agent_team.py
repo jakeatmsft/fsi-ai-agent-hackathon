@@ -331,19 +331,12 @@ class AgentTeam:
                     
             # If no tasks remain AND the recipient is not the TeamLeader,
             # let the TeamLeader see if more delegation is needed.
-            if not self._tasks and task.recipient != "TeamLeader":
-                # ... existing delegation logic ...
-                        # If no tasks remain AND the recipient is not the TeamLeader,
-                        # let the TeamLeader see if more delegation is needed.
-                        if not self._tasks and task.recipient != "TeamLeader":
-                            team_leader_request = self.TEAM_LEADER_TASK_COMPLETENESS_CHECK_INSTRUCTIONS
-                            new_task = _AgentTask(
-                                recipient=self._team_leader.name,
-                                task_description=team_leader_request,
-                                requestor="user"
-                            )
-                            self._add_task(new_task)
-                
+            if not self._tasks and not task.recipient == "TeamLeader":
+                team_leader_request = self.TEAM_LEADER_TASK_COMPLETENESS_CHECK_INSTRUCTIONS
+                task = _AgentTask(
+                    recipient=self._team_leader.name, task_description=team_leader_request, requestor="user"
+                )
+                self._add_task(task)
         return agent_responses  
                 
     def _get_member_by_name(self, name) -> Optional[_AgentTeamMember]:

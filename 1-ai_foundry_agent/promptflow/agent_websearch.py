@@ -12,7 +12,8 @@ from azure.ai.projects.models import (AsyncFunctionTool,
                                       SubmitToolOutputsAction, 
                                       ToolOutput, 
                                       AsyncToolSet,
-                                      CodeInterpreterTool)
+                                      CodeInterpreterTool,
+                                      BingGroundingTool)
 from azure.ai.projects.telemetry.agents import AIAgentsInstrumentor
 from azure.identity.aio import DefaultAzureCredential
 from azure.monitor.opentelemetry import configure_azure_monitor
@@ -29,7 +30,7 @@ tracer = trace.get_tracer(__name__)
 
 @tool
 @tracer.start_as_current_span(__file__)
-async def agent_websearch(question: str, model_deployment: str) -> str:
+async def agent_websearch(question: str, model_deployment: str, bing_grounding_conn: str) -> str:
     async with DefaultAzureCredential() as creds:
         async with AIProjectClient.from_connection_string(
             credential=creds, conn_str=os.environ["PROJECT_CONNECTION_STRING"],
@@ -38,13 +39,18 @@ async def agent_websearch(question: str, model_deployment: str) -> str:
             application_insights_connection_string = await project_client.telemetry.get_connection_string()
             configure_azure_monitor(connection_string=application_insights_connection_string)
             
+            bing_connection = await project_client.connections.get(connection_name=bing_grounding_conn)
+            conn_id = bing_connection.id
             # Initialize assistant functions
             functions = AsyncFunctionTool(functions=user_async_function_tools)
             code_interpreter = CodeInterpreterTool()
+            bing_grounding = BingGroundingTool(conn_id)
+
 
             toolset = AsyncToolSet()
             toolset.add(functions)
             toolset.add(code_interpreter)
+            toolset.add(bing_grounding)
 
             agent_name = "docs-research-assistant"
             # Try to find an existing agent with the name "my-docs-assistant"
@@ -57,7 +63,7 @@ async def agent_websearch(question: str, model_deployment: str) -> str:
                     model=model_deployment,
                     name=agent_name,
                     instructions='You are a question answerer using documentation site. Use the WebSearch tool to retrieve information to answer the questions from the docs site. Prepend "site:learn.microsoft.com" to any search query to search only the documentation site. You take in questions from a questionnaire and emit the answers, using documentation from the public web. You also emit links to any websites you find that help answer the questions. Do not address the user; make all responses solely in the third person. If you do not find information on a topic, simply respond that no information is available on that topic. The answer should be no greater than 1000 characters in length.',
-                    tools=functions.definitions + code_interpreter.definitions
+                    tools=functions.definitions + code_interpreter.definitions + bing_grounding.definitions
                 )
                 print(f"Created agent, agent ID: {agent.id}")
             else:
