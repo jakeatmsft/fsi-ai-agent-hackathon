@@ -36,59 +36,6 @@ def fetch_current_datetime(format: Optional[str] = None) -> str:
     time_json = json.dumps({"current_time": current_time.strftime(time_format)})
     return time_json
 
-
-async def bing_search(query: str, num_results: int = 3, offset: int = 0) -> str:
-    """search Bing for the query and return the search results.
-
-    :param query (str): search query.
-    :return: A JSON string 
-    :rtype: str
-    """
-    """Returns the search results of the query provided by pinging the Bing web search API."""
-    if not query:
-        raise SystemError("query cannot be 'None' or empty.")
-
-    if num_results <= 0:
-        raise SystemError("num_results value must be greater than 0.")
-    if num_results >= 50:
-        raise SystemError("num_results value must be less than 50.")
-
-    if offset < 0:
-        raise SystemError("offset must be greater than 0.")
-
-
-    base_url = ("https://api.bing.microsoft.com/v7.0/search"
-    )
-    request_url = f"{base_url}?q={urllib.parse.quote_plus(query)}&count={num_results}&offset={offset}" 
-
-    headers = {"Ocp-Apim-Subscription-Key": os.environ.get("BING_SEARCH_KEY")}
-
-    try:
-        async with AsyncClient(timeout=5) as client:
-            response = await client.get(request_url, headers=headers)
-            response.raise_for_status()
-            data = response.json()
-            pages = data.get("webPages", {}).get("value")
-            if pages:
-                formatted_pages = []
-                for page in pages:
-                    date_published = page.get('datePublished', 'N/A')
-                    if date_published != 'N/A':
-                        try:
-                            date_published = date_published[:10] #datetime.datetime.strptime(date_published, '%Y-%m-%dT%H:%M:%S.%fZ').strftime('%Y-%m-%d')
-                        except ValueError:
-                            date_published = 'N/A'
-                    formatted_pages.append(f"{page['snippet']} (URL: {page['url']}, Date Published: {date_published})")
-                return json.dumps({'q':query, 'r': formatted_pages})
-            return ''
-    except HTTPStatusError as ex:
-        raise SystemError("Failed to get search results.") from ex
-    except RequestError as ex:
-        raise SystemError("A client error occurred while getting search results.") from ex
-    except Exception as ex:
-        raise SystemError("An unexpected error occurred while getting search results.") from ex
-
-
 def is_probably_readable(soup: BeautifulSoup, min_score: int = 100) -> bool:
     # Implement a function to check if the document is probably readable
     # This is a placeholder implementation
@@ -177,6 +124,5 @@ async def get_webpage(url: str) -> str:
 # Statically defined user functions for fast reference with send_email as async but the rest as sync
 user_async_function_tools: Set[Callable[..., Any]] = {
     fetch_current_datetime,
-    bing_search,
     get_webpage,
 }

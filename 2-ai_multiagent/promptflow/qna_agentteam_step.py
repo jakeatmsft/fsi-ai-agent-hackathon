@@ -19,6 +19,7 @@ from azure.ai.projects.models import (
     SubmitToolOutputsAction,
     ToolOutput,
     CodeInterpreterTool,
+    BingGroundingTool,
     AsyncToolSet,
 )
 from azure.identity.aio import DefaultAzureCredential
@@ -34,7 +35,7 @@ tracer = trace.get_tracer(__name__)
 
 @tool
 @tracer.start_as_current_span(__file__)
-async def my_python_tool(deployment_name:str, subject_context:str, question: str) -> str:
+async def my_python_tool(deployment_name:str, subject_context:str, bing_grounding_conn:str, question: str) -> str:
 
 
     # Load credentials and settings from .env file
@@ -45,9 +46,14 @@ async def my_python_tool(deployment_name:str, subject_context:str, question: str
             
             application_insights_connection_string = await project_client.telemetry.get_connection_string()
             configure_azure_monitor(connection_string=application_insights_connection_string)
+            bing_connection = await project_client.connections.get(connection_name=bing_grounding_conn)
+            conn_id = bing_connection.id
+
             # Initialize assistant functions
             functions = AsyncFunctionTool(functions=user_async_function_tools)
             code_interpreter = CodeInterpreterTool()
+            bing_grounding = BingGroundingTool(conn_id)
+
             
             #generate random team name
 
@@ -96,10 +102,13 @@ async def my_python_tool(deployment_name:str, subject_context:str, question: str
             toolset1 = AsyncToolSet()
             toolset1.add(functions)
             toolset1.add(code_interpreter)
+            toolset1.add(bing_grounding)
+
             
             toolset2 = AsyncToolSet()
             toolset2.add(functions)
-            
+            toolset2.add(bing_grounding)
+
             # Create agent
             agent_team.add_agent(
                 model=deployment_name,

@@ -11,3 +11,4 @@ bs4==0.0.2
 readability==0.3.2
 readability-lxml==0.8.1
 lxml_html_clean==0.4.1
+marshmallow==3.25.1

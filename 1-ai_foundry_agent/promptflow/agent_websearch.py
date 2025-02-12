@@ -107,6 +107,29 @@ async def agent_websearch(question: str, model_deployment: str, bing_grounding_c
                 )
                 print(f"Saved image file to: {Path.cwd() / file_name}")
 
-            last_message = messages.text_messages[0].text.value
-            return last_message
+            last_message = messages.text_messages[0].text
+            response = print_response_with_citations(last_message)
+            return response
+        
+def print_response_with_citations(response):
+    """Prints the response value with citations in Markdown format."""
+    value = response['value']
+    annotations = response.get('annotations', [])
+
+    last_index = 0
+    output = ""
+
+    for annotation in annotations:
+        if annotation['type'] == 'url_citation':
+            start_index = annotation['start_index']
+            end_index = annotation['end_index']
+            text = annotation['text']
+            url = annotation['url_citation']['url']
+
+            output += value[last_index:start_index]
+            output += f"[{text}]({url})"
+            last_index = end_index
+
+    output += value[last_index:]
+    return(output)
             

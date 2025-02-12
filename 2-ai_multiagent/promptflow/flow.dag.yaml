@@ -10,8 +10,7 @@ inputs:
     is_chat_input: false
   question:
     type: string
-    default: What types of safety filters are available in Azure OpenAI? Use search
-      tools and webpages to get the latest information.
+    default: How many openai deployments can I have in a single resource?
     is_chat_input: true
 outputs:
   output:
@@ -32,6 +31,7 @@ nodes:
     deployment_name: gpt-4o
     question: ${inputs.question}
     subject_context: ${inputs.subject_context}
+    bing_grounding_conn: binggrounding
   use_variants: false
 - name: formatter
   type: prompt

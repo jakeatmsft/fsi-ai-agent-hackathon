@@ -320,7 +320,7 @@ class AgentTeam:
                 if text_message and text_message.get("content") and len(text_message["content"]) > 0:
                     # Extract the text from the first content item.
                     content_item = text_message["content"][0]
-                    text_value = content_item.get("text", {}).get("value", "")
+                    text_value = print_response_with_citations(content_item.get("text", {}))
                     # Use the assistant_id from text_message if available; otherwise fallback to agent_instance.id.
                     assistant_id = text_message.get("assistant_id", agent_instance.id)
                     last_message = {"assistant_id": assistant_id, "text": text_value, "agent": agent.name}
@@ -387,3 +387,26 @@ agent_team_default_functions: Set = {
 }
 
 default_function_tool = AsyncFunctionTool(functions=agent_team_default_functions)
+
+def print_response_with_citations(response):
+    """Prints the response value with citations in Markdown format."""
+    value = response['value']
+    annotations = response.get('annotations', [])
+
+    last_index = 0
+    output = ""
+
+    for annotation in annotations:
+        if annotation['type'] == 'url_citation':
+            start_index = annotation['start_index']
+            end_index = annotation['end_index']
+            text = annotation['text']
+            url = annotation['url_citation']['url']
+
+            output += value[last_index:start_index]
+            output += f"[{text}]({url})"
+            last_index = end_index
+
+    output += value[last_index:]
+    return(output)
+            
