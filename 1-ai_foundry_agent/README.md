@@ -24,9 +24,11 @@
 <img width="691" alt="image" src="https://github.com/user-attachments/assets/9c2a0403-ecfa-4385-96d1-2b304bc30180" />
 
 a. When you are on the "Add role Assignment" tab, search "Storage Blob Data Contributor" and click "Next" which can be found at the bottom of the page.
+
 <img width="650" alt="image" src="https://github.com/user-attachments/assets/9d3db545-cc26-438d-a27a-c2033826f386" />
 
 b. Select "user, group or service principal" and click on select memebers to search your email ID. Once done, click on "Review and Assign" found on the bottom of the page. 
+
 <img width="1256" alt="image" src="https://github.com/user-attachments/assets/4bec57f7-b9f3-4972-8140-eb6b9c18fa19" />
 
 Repeat the same steps to grant yourself "Storage File Data Privileged Contributor"
@@ -34,16 +36,25 @@ Repeat the same steps to grant yourself "Storage File Data Privileged Contributo
 4. Go to the storage account within your resource group. Click on the overview tab and ensure that storage account key access is "enabled"
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/f5de96c5-bcc3-43ce-9832-8dc05e59b3d5" />
 
-5. Create a bing search resource by navigating back to the Azure Portal and searching "Bing Resources".
-<img width="820" alt="image" src="https://github.com/user-attachments/assets/4443afb6-680b-42e7-855a-92391deff235" />
+5. Create a bing grounding resource by navigating back to the Azure Portal and searching "Bing Resources".
+<img width="1270" alt="image" src="https://github.com/user-attachments/assets/9b85b3f3-2bec-4dd1-a093-cdc322625d79" />
 
+a. Once you select "Grounding with Bing Search", proceed with filling the required details like selecting your resource group, selecting a basic pricing tier and providing a name.
 
-a. Once you click on Bing Resources, select "Bing Search" and proceed with adding the resource. 
+<img width="503" alt="image" src="https://github.com/user-attachments/assets/be1dc8ee-f544-438b-9a17-743832982868" />
 
-<img width="1246" alt="image" src="https://github.com/user-attachments/assets/fce18dbb-c618-4c03-bf84-ce8edc44678b" />
+b. Navigate to your Management Center of AI Foundry and click on "New Connection" under connected resources
 
-b. Fill out the details like selecting your resource group and selecting a basic pricing tier. 
-<img width="470" alt="image" src="https://github.com/user-attachments/assets/4bd338f4-d4c4-4191-b9d3-279359584dca" />
+<img width="1209" alt="image" src="https://github.com/user-attachments/assets/12dbafdf-c6e4-47d9-b054-636e20046489" />
+
+c. Once you click on the "New Connection", select "Grounding with Bing Search"
+
+<img width="1145" alt="image" src="https://github.com/user-attachments/assets/0df2b85e-ccd1-4792-b680-58fb4084582c" />
+
+d. You will see your created resource on the screen as shown below. You can click on "Add Connection" and it will be linked to your project within AI Foundry. 
+
+<img width="864" alt="image" src="https://github.com/user-attachments/assets/1f382c31-2c1e-4301-98aa-9a26537de12c" />
+
 
 
 ## Now you are all set to proceed to your project to start the Single Agent Deployments.
@@ -63,22 +74,24 @@ You can extract the files/folders from your zip folder for ease of access in the
 <img width="1087" alt="image" src="https://github.com/user-attachments/assets/56ed621a-4e74-4c31-a479-659b740a6a90" />
 
 
-5. Once you have created the flow, update the deploy.env file with your project connection string and bing chat connection key. The deploy.env can be found under the "Files" section. 
-<img width="1085" alt="image" src="https://github.com/user-attachments/assets/32e4441e-64f5-481c-a768-34eefc5eb933" />
+5. Once you have created the flow, update the deploy.env file with your project connection string. The deploy.env can be found under the "Files" section. 
+<img width="1064" alt="image" src="https://github.com/user-attachments/assets/a1dd9019-9964-41c7-8195-b71f42b327a7" />
+
 
 The project connection string can be found by navigating to "Overview tab" of your project
 <img width="1235" alt="image" src="https://github.com/user-attachments/assets/f5ac3b87-c430-4221-befe-2c1349192602" />
 
-The bing chat connection key cab be found by navigating to your bing resource via the azure portal. Go to the overview and then to "Manage Keys". You can grab any one of the key and paste it in the deploy.env file. Click on Save. 
-<img width="1126" alt="image" src="https://github.com/user-attachments/assets/d096ad25-5451-459f-9f67-314c5ff9ff89" />
 
+6. Go back to the created flow and update the model parameter with the deployed model name and bing grounding resource name in the file agent_Websearch.py file. The model name can be found in "Models + EndPoints" within the AI project.
+<img width="636" alt="image" src="https://github.com/user-attachments/assets/36373758-cb7c-4f6e-b416-1ca78faaab30" />
 
-6. Go back to the created flow and update the model parameter with the deployed model name in the file agent_Websearch.py file. The model name can be found in "Models + EndPoints" within the AI project.
-<img width="931" alt="image" src="https://github.com/user-attachments/assets/b8abe774-d8c1-4d7f-8acb-422c031deec1" />
+The bing grounding resource name can be found within your management center of your AI hub
+<img width="1268" alt="image" src="https://github.com/user-attachments/assets/10eccd52-fd47-435c-8161-75fda39950ed" />
 
 
 7. Now, you are ready to test your agent by starting the compute session and clicking on "Chat" and asking questions.
-<img width="1067" alt="image" src="https://github.com/user-attachments/assets/fcb82b81-bef0-41d5-b589-ca1eb07898e6" />
+<img width="1253" alt="image" src="https://github.com/user-attachments/assets/fc13de47-cb49-4f3a-a042-bd75408df6e7" />
+
 
 8. If the agent is working successfully, you will be able to see the agents in the "Agents" tab.
 <img width="1153" alt="image" src="https://github.com/user-attachments/assets/05fff0b7-dd4e-4dc6-89ee-d3fd8e0f0294" />
