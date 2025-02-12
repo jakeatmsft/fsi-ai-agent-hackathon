@@ -2,120 +2,132 @@
 
 This repo contains scripts and flows for deploying and creating AI Agents in both Single Agent and Multi Agent deployment types.
 
+## Features
+
+This demo teaches developers how to:
+
+- **Create or Reuse Agents Programmatically**  
+  Demonstrates how to connect to an Azure AI Foundry hub, either create a new agent with customized instructions (using GPT-4o or any supported model), or reuse an existing agent.
+
+- **Incorporate Bing Grounding**  
+  Shows how to add Bing search capabilities to an agent, including how to customize the search query and format the results.    
+
+- **Integrate Server-Side Tools**  
+  Illustrates adding tools—like Bing search, file search, and custom Python functions—into a single `ToolSet`, and how to intercept and log each tool call.
+
+- **Evaluate Agent Performance**  
+  Demonstrates how to evaluate the performance of an agent using a set of questions and answers, and how to visualize the results.
+
 Table of contents:
 
 * [Setting up this project](#setting-up-this-project)
-* [Deploying a GPT-4 model](#deploying-a-gpt-4-model)
-* [Generating ground truth data](#generating-ground-truth-data)
+* [Deploying Single Agent](#deploying-single-agent)
+* [Deploying Multi Agent](#deploying-multi-agent)
 * [Running an evaluation](#running-an-evaluation)
 * [Viewing the results](#viewing-the-results)
-* [Measuring app's ability to say "I don't know"](#measuring-apps-ability-to-say-i-dont-know)
 
 ## Setting up this project
+### Prerequisites
+- **Python 3.9+**  
+- **Visual Studio Code** with the Python and Jupyter extensions  
+- An **Azure AI Foundry** resource set up (see [Azure AI Agent Service docs](https://learn.microsoft.com/azure/ai-services/agents/))
+- 
+### Installation & Setup
 
-If you open this project in a Dev Container or GitHub Codespaces, it will automatically set up the environment for you.
-If not, then follow these steps:
+1. **Clone** this repository:
 
-1. Install Python 3.10 or higher
-2. Create a Python [virtual environment](https://learn.microsoft.com/azure/developer/python/get-started?tabs=cmd#configure-python-virtual-environment).
-2. Inside that virtual environment, install the requirements:
+   ```bash
+   git clone https://github.com/jakeatmsft/fsi-ai-agent-hackathon.git
+   ```
 
-    ```shell
-    python -m pip install -r requirements.txt
+2. **Create a virtual environment** (using venv as an example):
+
+    ```bash
+    python -m venv .venv
     ```
 
-## Deploying a GPT-4 model
+3. **Activate** your virtual environment:
 
-It's best to use a GPT-4 model for performing the evaluation, even if your chat app uses GPT-3.5 or another model.
-You can either use an Azure OpenAI instance or an openai.com instance.
+    - Windows: `.venv\Scripts\activate`
+    - macOS/Linux: `source .venv/bin/activate`
 
-### Using a new Azure OpenAI instance
+4. **Install** the required dependencies:
 
-To use a new Azure OpenAI instance, you'll need to create a new instance and deploy the app to it.
-We've made that easy to deploy with the `azd` CLI tool.
-
-1. Install the [Azure Developer CLI](https://aka.ms/azure-dev/install)
-2. Run `azd auth login` to log in to your Azure account
-3. Run `azd up` to deploy a new GPT-4 instance
-4. Create a `.env` file based on the provisioned resources by running one of the following commands.
-
-    Bash:
-
-    ```shell
-    azd env get-values > .env
+    ```bash
+    pip install -r requirements.txt
     ```
 
-    PowerShell:
+5. **Create a `.env` file** at the root of this folder to store secret keys and settings (e.g., the connection string and optional model name). You can copy the provided `.env.example` file:
 
-    ```powershell
-    $output = azd env get-values; Add-Content -Path .env -Value $output;
-    ```
+    - Windows (PowerShell):
+      ```powershell
+      Copy-Item -Path .env.example -Destination .env
+      ```
+    
+    - macOS/Linux:
+      ```bash
+      cp .env.example .env
+      ```
 
-### Using an existing Azure OpenAI instance
+    Then, open the `.env` file and update it with your configuration details.
 
-If you already have an Azure OpenAI instance, you can use that instead of creating a new one.
+    - Add your [Azure AI Foundry](https://learn.microsoft.com/azure/ai-services/agents/quickstart?pivots=programming-language-python-azure#configure-and-run-an-agent) connection string:
+        ```plaintext
+        PROJECT_CONNECTION_STRING="<HostName>;<AzureSubscriptionId>;<ResourceGroup>;<ProjectName>"
+        ```
 
-1. Create `.env` file by copying `.env.sample`
-2. Fill in the values for your instance:
+    - Specify the [compatible model](https://learn.microsoft.com/azure/ai-services/agents/how-to/tools/bing-grounding?tabs=python&pivots=overview#setup) you want to use (e.g. GPT-4o):
+        ```plaintext
+        MODEL_NAME="YOUR_MODEL_NAME"
+        ```
 
-    ```shell
-    AZURE_OPENAI_EVAL_DEPLOYMENT="<deployment-name>"
-    AZURE_OPENAI_SERVICE="<service-name>"
-    ```
+    - **Grounding with Bing**
+            
+    ## Setup  
+    
+    > [!IMPORTANT]
+    > 1. Grounding with Bing Search has a separate [Terms of Use agreement](https://www.microsoft.com/en-us/bing/apis/grounding-legal-preview) you need to agree to in order to move forward. Please [use this form](https://forms.office.com/r/2j3Sgu8S9K) to sign the agreement. After you have signed the form, it will take 1-3 days for us to whitelist your subscription.
+    > 2. Please make sure your resource is created in `EastUS`.
+    > 3. We recommend using the following models: `gpt-3.5-turbo-0125`, `gpt-4-0125-preview`, `gpt-4-turbo-preview`, `gpt-4-turbo`, `gpt-4-turbo-2024-04-09`, `gpt-4o`, `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`
+    
+    
+    1. Ensure you have logged in to Azure, using `az login`
+    
+    2. Register the Bing Search provider
+       ```console
+           az provider register --namespace 'Microsoft.Bing'
+       ```
+    
+    3. Create a new Grounding with Bing Search resource using one of the methods below:
+        - [Create Bing resource in Azure](https://ms.portal.azure.com/#create/Microsoft.BingGroundingSearch) 
+        - AI Foundry Studio [AI Foundry Setup](https://learn.microsoft.com/en-us/azure/ai-services/agents/how-to/tools/bing-grounding?tabs=python&pivots=overview#setup)
+  
+    4. After you have created a Grounding with Bing Search resource, you can find it in [Azure Portal](https://ms.portal.azure.com/#home). Going to the resource group you have created the resource at, search for the Grounding with Bing Search resource you have created.
+    ![alt text](assets/383259479-3b22c48d-987c-4234-a9eb-67aefe3af81c.png)
+    5. Click the Grounding with Bing Search resource you have created and copy any of the API key
+    ![alt text](assets/383260123-be98e07d-c91d-4ff9-a97c-6f02c3265221.png)
+    6. Go to [Azure AI Studio](https://ai.azure.com/) and select the AI Project(make sure it's in the same resource group of your Grounding with Bing Search resource). Click Settings and then "+new connection" button in Settings page
+    ![alt text](assets/383261431-28bfebda-f3a4-4638-b714-a128a8fa48cb.png)
+    ![alt text](assets/383261546-7bb9c98e-dd46-4031-be9d-17c70613f222.png)
+    7. Select "API key" custom connection in other resource types
+    ![alt text](assets/383261772-7577c912-cf0f-433a-910b-3d9e0ad138c4.png)
+    8. Enter the following information and then create a new connection to your Grounding with Bing Search resource
+    - Endpoint: https://api.bing.microsoft.com/
+    - Key: YOUR_API_KEY
+    - Connection name: YOUR_CONNECTION_NAME (You will use this connection name in the sample code below.)
+    - Access: you can choose either "this project only" or "shared to all projects". Just make sure in the sample code below, the project you entered connection string for has access to this connection.
 
-3. The scripts default to keyless access (via `AzureDefaultCredential`), but you can optionally use a key by setting `AZURE_OPENAI_KEY` in `.env`.
 
-## Generating ground truth data
+## Deploying Single Agent
+![alt text](assets/150336.png)
+Follow instructions in [1-single-agent](./1-ai_foundry_agent/README.md) to deploy a single agent.
 
-In order to evaluate new answers, they must be compared to "ground truth" answers: the ideal answer for a particular question. See `example_input/qa.jsonl` for an example of the format.
-We recommend at least 200 QA pairs if possible.
+## Deploying Multi Agent
+![alt text](assets/150919.png)
+Follow instructions in [2-ai_multiagent](./2-ai_multiagent/README.md) to deploy an agent team.
 
-There are a few ways to get this data:
-
-1. Manually curate a set of questions and answers that you consider to be ideal. This is the most accurate, but also the most time-consuming. Make sure your answers include citations in the expected format. This approach requires domain expertise in the data.
-2. Use the generator script to generate a set of questions and answers. This is the fastest, but may also be the least accurate. See below for details on how to run the generator script.
-3. Use the generator script to generate a set of questions and answers, and then manually curate them, rewriting any answers that are subpar and adding missing citations. This is a good middle ground, and is what we recommend.
-
-<details>
- <summary>Additional tips for ground truth data generation</summary>
-
-* Generate more QA pairs than you need, then prune them down manually based on quality and overlap. Remove low quality answers, and remove questions that are too similar to other questions.
-* Be aware of the knowledge distribution in the document set, so you effectively sample questions across the knowledge space.
-* Once your chat application is live, continually sample live user questions (within accordance to your privacy policy) to make sure you're representing the sorts of questions that users are asking.
-
-</details>
-
-### Running the generator script
-
-This repo includes a script for generating questions and answers from documents stored in Azure AI Search.
-
-> [!IMPORTANT]
-> The generator script can only generate English Q/A pairs right now, due to [limitations in the azure-ai-generative SDK](https://github.com/Azure/azure-sdk-for-python/issues/34099).
-
-1. Create `.env` file by copying `.env.sample`
-2. Fill in the values for your Azure AI Search instance:
-
-    ```shell
-    AZURE_SEARCH_SERVICE="<service-name>"
-    AZURE_SEARCH_INDEX="<index-name>"
-    AZURE_SEARCH_KEY=""
-    ```
-
-    The key may not be necessary if it's configured for keyless access from your account.
-    If providing a key, it's best to provide a query key since the script only requires that level of access.
-
-3. Run the generator script:
-
-    ```shell
-    python -m scripts generate --output=example_input/qa.jsonl --numquestions=200 --persource=5
-    ```
-
-    That script will generate 200 questions and answers, and store them in `example_input/qa.jsonl`. We've already provided an example based off the sample documents for this app.
-
-    To further customize the generator beyond the `numquestions` and `persource` parameters, modify `scripts/generate.py`.
 
 ## Running an evaluation
-
 We provide a script that loads in the current `azd` environment's variables, installs the requirements for the evaluation, and runs the evaluation against the local app. Run it like this:
 
 ```shell
