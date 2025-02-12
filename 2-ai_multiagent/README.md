@@ -1,36 +1,39 @@
-# Assistant Chat flow for agentic Question and Answering specific domain
-This template also includes multi-agent tools specifically designed for question and answer tasks. These tools can help automate various operations, such as information retrieval, context management, and response generation. By integrating these tools into your chat flow, you can create a powerful assistant capable of handling complex queries and tasks across multiple domains.
+## Before starting the multi-agent setup, please make sure you have completed all the prerequisites listed in the README.MD file in the 1-ai_foundry_agent directory
 
-## Create connection for LLM tool to use
-You can follow these steps to create a connection required by a LLM tool.
+## PreRequisites for Multi-Agent
 
-Currently, there are two connection types supported by LLM tool: "AzureOpenAI" and "OpenAI". If you want to use "AzureOpenAI" connection type, you need to create an Azure OpenAI service first. Please refer to [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service/) for more details. If you want to use "OpenAI" connection type, you need to create an OpenAI account first. Please refer to [OpenAI](https://platform.openai.com/) for more details.
+1. Please ensure that you have a "gpt-4o" model deployed in your AI Project. You can check that in the "Models and Endpoints" section.If the model is not deployed, you can deploy it via "Deploy model" on the below screen. 
+<img width="803" alt="image" src="https://github.com/user-attachments/assets/d600a4b9-d67f-4fd6-b940-7b22230d5db5" />
 
-```bash
-# create bing api connection
-pf connection create --file bing_connection.yaml 
+## Multi-Agent Build Process
 
-# Create azure open ai connection
- pf connection create --file default_azureopenai.yaml 
-```
-Please refer to connections [document](https://promptflow.azurewebsites.net/community/local/manage-connections.html) and [example](https://github.com/microsoft/promptflow/tree/main/examples/connections) for more details.
+1. Navigate to prompt flow within your AI project to create a new flow. Select the "Upload from local" option.
+<img width="1222" alt="image" src="https://github.com/user-attachments/assets/24697d06-b144-47ca-be73-2b83662b1b54" />
 
-## Develop a chat flow
+2. Once the upload window opens, upload the "prompt flow" folder found in the 2-ai_multiagent (Ensure that you have downloaded the git repository in your local environment: https://github.com/jakeatmsft/fsi-ai-agent-hackathon)
+Ensure that you have uploaded the entire "promptflow" folder. 
+<img width="1159" alt="image" src="https://github.com/user-attachments/assets/0a12e2d5-71bb-465d-8073-efd92772814b" />
 
-The most important elements that differentiate a chat flow from a standard flow are **Chat Input**, **Chat History**, and **Chat Output**.
 
-- **Chat Input**: Chat input refers to the messages or queries submitted by users to the chatbot. Effectively handling chat input is crucial for a successful conversation, as it involves understanding user intentions, extracting relevant information, and triggering appropriate responses.
+3. As done in the single agent file, update the "deploy.env" file here as well.
+<img width="1046" alt="image" src="https://github.com/user-attachments/assets/3c810f78-beb4-440b-8b9a-54a4b1e45c80" />
 
-- **Chat History**: Chat history is the record of all interactions between the user and the chatbot, including both user inputs and AI-generated outputs. Maintaining chat history is essential for keeping track of the conversation context and ensuring the AI can generate contextually relevant responses. Chat History is a special type of chat flow input, that stores chat messages in a structured format.
+The project connection string can be found in the "Overview" page of the project
+<img width="1166" alt="image" src="https://github.com/user-attachments/assets/9cbb0e5f-b0e6-4c0b-a166-0e122a9b3d99" />
 
-- **Chat Output**: Chat output refers to the AI-generated messages that are sent to the user in response to their inputs. Generating contextually appropriate and engaging chat outputs is vital for a positive user experience.
+The Bing Search Key can be found under the "Bing Sources" in the Azure Portal. You can use any key for this deployment.
+<img width="1130" alt="image" src="https://github.com/user-attachments/assets/103e3174-bbc6-4606-9788-0663326b7ed5" />
 
-A chat flow can have multiple inputs, but Chat History and Chat Input are required inputs in chat flow.
+4. Once you have made the above updates, you are ready to chat with your data. Make sure the compute session is running before asking your question!
+<img width="1057" alt="image" src="https://github.com/user-attachments/assets/5eb9b302-607f-49c6-a2be-7fe18f1a836b" />
 
-## Interact with chat flow
+5. You can also see your agents in the "Agents" tab
+<img width="809" alt="image" src="https://github.com/user-attachments/assets/552c6d8e-19bf-4e2b-8e20-5e13f0b62049" />
 
-Promptflow CLI provides a way to start an interactive chat session for chat flow. Customer can use below command to start an interactive chat session:
+Each interaction within user and agent can be found in the "Threads" tab
+<img width="1226" alt="image" src="https://github.com/user-attachments/assets/20a4d1df-8e78-4beb-8bce-43e8148c175b" />
 
-```
-pf flow test --flow <flow_folder> --interactive
-```
+6. You can also deploy this flow via "Deploy" button.
+
+
+
