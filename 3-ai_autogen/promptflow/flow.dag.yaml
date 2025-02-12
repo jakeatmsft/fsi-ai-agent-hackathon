@@ -25,3 +25,6 @@ nodes:
     conn: Default_AzureOpenAI
     model_deployment: gpt-4o
     input1: ${inputs.question}
+environment_variables:
+  PF_WORKER_COUNT: 1
+  PF_BATCH_METHOD: "spawn"  
