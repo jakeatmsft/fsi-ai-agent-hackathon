@@ -15,17 +15,23 @@ Ensure that you have uploaded the entire "promptflow" folder.
 <img width="1159" alt="image" src="https://github.com/user-attachments/assets/0a12e2d5-71bb-465d-8073-efd92772814b" />
 
 
-3. As done in the single agent file, update the "deploy.env" file here as well.
-<img width="1046" alt="image" src="https://github.com/user-attachments/assets/3c810f78-beb4-440b-8b9a-54a4b1e45c80" />
+3. As updated for the single agent deploy.env file, update the "deploy.env" file here as well.
+<img width="1067" alt="image" src="https://github.com/user-attachments/assets/e7918c70-ace7-40a3-b58b-298de00bdd94" />
+
 
 The project connection string can be found in the "Overview" page of the project
 <img width="1166" alt="image" src="https://github.com/user-attachments/assets/9cbb0e5f-b0e6-4c0b-a166-0e122a9b3d99" />
 
-The Bing Search Key can be found under the "Bing Sources" in the Azure Portal. You can use any key for this deployment.
-<img width="1130" alt="image" src="https://github.com/user-attachments/assets/103e3174-bbc6-4606-9788-0663326b7ed5" />
+4. Update the bing_grounding_conn within the flow.
+<img width="636" alt="image" src="https://github.com/user-attachments/assets/479995fd-aee1-4352-88f3-4fadf3e17805" />
+
+The bing_grounding_conn can be found under the connected resources within the management center of your hub. Copy this name and paste it in your flow. 
+<img width="1255" alt="image" src="https://github.com/user-attachments/assets/ef83a29d-bcab-4d70-b109-3a995f9d4a96" />
+
 
 4. Once you have made the above updates, you are ready to chat with your data. Make sure the compute session is running before asking your question!
-<img width="1057" alt="image" src="https://github.com/user-attachments/assets/5eb9b302-607f-49c6-a2be-7fe18f1a836b" />
+<img width="1019" alt="image" src="https://github.com/user-attachments/assets/7504d62a-73fb-4c31-9f75-32c9484039a8" />
+
 
 5. You can also see your agents in the "Agents" tab
 <img width="809" alt="image" src="https://github.com/user-attachments/assets/552c6d8e-19bf-4e2b-8e20-5e13f0b62049" />
