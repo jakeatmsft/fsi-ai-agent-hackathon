@@ -22,6 +22,7 @@ async def mag1_tool(input1: str, model_deployment:str, conn:AzureOpenAIConnectio
     )
     m1 = MagenticOne(client=client)
     task = input1
-    result = await Console(m1.run_stream(task=task))
+    result = await Console(m1.run_stream(task=task+'\nSave all code artifacts, screenshots, and images to a folder named "artifacts"'))
+    print(result.messages[-1].content)
     last_msg = result.messages[-1].content
     return last_msg
