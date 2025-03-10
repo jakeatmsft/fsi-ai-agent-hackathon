@@ -316,19 +316,27 @@ class AgentTeam:
                 print(f"Created and processed run for agent '{agent.name}', run ID: {run.id}")
     
                 messages = await self._project_client.agents.list_messages(thread_id=self._thread_id)
-                text_message = messages.get_last_message_by_sender(MessageRole.AGENT)
-                if text_message and text_message.get("content") and len(text_message["content"]) > 0:
-                    # Extract the text from the first content item.
-                    content_item = text_message["content"][0]
-                    text_value = print_response_with_citations(content_item.get("text", {}))
+                # text_message = messages.get_last_text_message_by_role(role=MessageRole.AGENT)
+                # if text_message and text_message.get("content") and len(text_message["content"]) > 0:
+                #     # Extract the text from the first content item.
+                #     content_item = text_message["content"][0]
+
+                # else:
+                #     print(f"Agent '{agent.name}' completed task but no valid text message was returned.")
+                text_message = messages.get_last_text_message_by_role(role=MessageRole.AGENT)
+                if text_message and text_message.text:
                     # Use the assistant_id from text_message if available; otherwise fallback to agent_instance.id.
                     assistant_id = text_message.get("assistant_id", agent_instance.id)
-                    last_message = {"assistant_id": assistant_id, "text": text_value, "agent": agent.name}
+                    last_message = {"assistant_id": assistant_id, "text": text_message.text.value, "agent": agent.name}
                     agent_responses.append(last_message)
                     print(f"Agent '{agent.name}' completed task. Outcome: {last_message}")
+                    print(f"Agent '{agent.name}' completed task. " f"Outcome: {text_message.text.value}")
+
                 else:
                     print(f"Agent '{agent.name}' completed task but no valid text message was returned.")
-                    
+
+                    #if self._current_task_span is not None:
+                    #    self._add_task_completion_event(self._current_task_span, result=text_message.text.value)
             # If no tasks remain AND the recipient is not the TeamLeader,
             # let the TeamLeader see if more delegation is needed.
             if not self._tasks and not task.recipient == "TeamLeader":
