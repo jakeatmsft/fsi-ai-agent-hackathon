@@ -1,6 +1,8 @@
 # Getting started with **Azure AI Agent Service**
 
-This repo contains scripts and flows for deploying and creating AI Agents in both Single Agent and Multi Agent deployment types.
+This repo contains scripts and promptflows for deploying and creating AI Agents in both Single Agent and Multi Agent scenarios.  
+
+*** For examples without dependency on [promptflow](https://github.com/microsoft/promptflow), please reference these labs: [fsi-azure-ai-agents-lab](https://github.com/jakeatmsft/fsi-azure-ai-agents-lab).
 
 ## Features
 
